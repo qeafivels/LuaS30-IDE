@@ -41,7 +41,7 @@ class AppToast(QFrame):
 
     def show_message(self, message: str, *, action_text: str = "", timeout_ms: int = 7000) -> None:
         self._timer.stop()
-        self.icon_label.setPixmap(icon("fa5s.bell", "#70A6FF").pixmap(18, 18))
+        self.icon_label.setPixmap(icon("fa5s.bell", "#64A7FF").pixmap(18, 18))
         self.message_label.setText(message)
         self.action_button.setText(action_text)
         self.action_button.setVisible(bool(action_text))

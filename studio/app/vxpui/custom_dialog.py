@@ -245,7 +245,7 @@ class CustomDialog(QDialog):
         elif ghost:
             button.setObjectName("GhostBtn")
         if icon_name:
-            button.setIcon(icon(icon_name, "#C9D6EA", "#FFFFFF"))
+            button.setIcon(icon(icon_name, "#B7BDCF", "#FFFFFF"))
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         button.setMinimumHeight(36)
         button.setMinimumWidth(88)
@@ -366,11 +366,11 @@ class NoticeDialog(CustomDialog):
 
         icon_label = QLabel()
         if error:
-            icon_name, icon_color = "fa5s.exclamation-circle", "#FF6B72"
+            icon_name, icon_color = "fa5s.exclamation-circle", "#FF6375"
         elif warning:
-            icon_name, icon_color = "fa5s.exclamation-triangle", "#F5B84B"
+            icon_name, icon_color = "fa5s.exclamation-triangle", "#FF9B32"
         else:
-            icon_name, icon_color = "fa5s.info-circle", "#5B93FF"
+            icon_name, icon_color = "fa5s.info-circle", "#FF8A00"
         icon_label.setPixmap(icon(icon_name, icon_color).pixmap(28, 28))
         icon_label.setAlignment(Qt.AlignmentFlag.AlignTop)
         layout.addWidget(icon_label)
@@ -847,7 +847,7 @@ class RunSessionDialog(CustomDialog):
         status_layout.setContentsMargins(0, 0, 0, 0)
         status_layout.setSpacing(10)
         self.status_icon = QLabel()
-        self.status_icon.setPixmap(icon("fa5s.play-circle", "#64D28A").pixmap(24, 24))
+        self.status_icon.setPixmap(icon("fa5s.play-circle", "#56C990").pixmap(24, 24))
         status_layout.addWidget(self.status_icon)
         self.status_label = QLabel("Đang chuẩn bị…")
         self.status_label.setObjectName("RunSessionStatus")
@@ -904,16 +904,16 @@ class RunSessionDialog(CustomDialog):
         self.stop_button.setEnabled(running)
         if running:
             self.progress.setRange(0, 0)
-            self.status_icon.setPixmap(icon("fa5s.circle-notch", "#64D28A").pixmap(24, 24))
+            self.status_icon.setPixmap(icon("fa5s.circle-notch", "#56C990").pixmap(24, 24))
             return
         self.progress.setRange(0, 1)
         self.progress.setValue(1)
         if success is True:
-            self.status_icon.setPixmap(icon("fa5s.check-circle", "#64D28A").pixmap(24, 24))
+            self.status_icon.setPixmap(icon("fa5s.check-circle", "#56C990").pixmap(24, 24))
             self.status_label.setText("Hoàn tất")
         elif success is False:
-            self.status_icon.setPixmap(icon("fa5s.times-circle", "#FF6B72").pixmap(24, 24))
+            self.status_icon.setPixmap(icon("fa5s.times-circle", "#FF6375").pixmap(24, 24))
             self.status_label.setText("Tác vụ thất bại")
         else:
-            self.status_icon.setPixmap(icon("fa5s.stop-circle", "#F5B84B").pixmap(24, 24))
+            self.status_icon.setPixmap(icon("fa5s.stop-circle", "#FF9B32").pixmap(24, 24))
             self.status_label.setText("Đã dừng")

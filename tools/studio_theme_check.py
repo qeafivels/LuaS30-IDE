@@ -14,7 +14,7 @@ Ba nhóm kiểm tra:
      * `theme.py` không còn hex trực tiếp, mọi màu là token `@TEN`.
      * `APP_STYLE` giải ra được, không sót token nào.
      * Bo góc chỉ còn bốn mức 6 / 8 / 10 / 12px (10 = thẻ lớn + nút Gửi của
-       panel AI Trợ lý theo PROMPT "Modern Dark AI Assistant").
+       panel AI Agent theo bảng màu UAGet Desktop).
      * Không còn `color: white|black`.
      * Mọi hex trong `studio/**/*.py` phải nằm trong `palette.py`, trừ những
        file có trong ALLOWLIST (màu cú pháp, bảng màu nội dung game, swatch).
@@ -62,9 +62,9 @@ ALLOWLIST: dict[str, str] = {
         "bezel + màn Nokia 225 của cửa sổ giả lập — ART THIẾT BỊ, không phải chrome IDE",
 }
 
-# Chrome VXPEngine (studio/app/vxpui) mang bảng màu enterprise-dark RIÊNG
-# (#0F1115/#151A23/#5B93FF…), được port 1:1 theo yêu cầu UI — cố ý không
-# dùng palette.py của theme Studio cũ.
+# Chrome VXPEngine (studio/app/vxpui) đã ĐỒNG BỘ theo bảng màu UAGet Desktop
+# (#111122/#19192e/#ff8a00…) — vẫn giữ nguồn riêng là dark_theme.qss (hex trực
+# tiếp, có chủ ý) nên nằm ngoài palette.py của Studio.
 for _chrome in (
     "code_editor", "custom_dialog", "home_page", "icons", "log_format",
     "main_window", "panel_frame", "task_progress", "title_bar", "toast",
@@ -495,7 +495,7 @@ def render(out_dir: Path | None) -> None:
         return pixmap
 
     shot = grab(window, "main_window.png")
-    # Nút accent "PrimaryAction" SÁNG CÓ CHỦ Ý (xanh #5B93FF của chrome
+    # Nút accent "PrimaryAction" SÁNG CÓ CHỦ Ý (cam #FF8A00 của chrome
     # VXPEngine) — miễn trừ đúng vùng của nó, giống hộp thoại MRE bên dưới.
     accent_ignore = []
     for b in window.findChildren(QPushButton):

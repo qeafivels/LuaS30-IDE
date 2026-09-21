@@ -9,8 +9,8 @@ from typing import Callable
 from PySide6.QtCore import QPoint, QTimer, Qt, Signal
 from PySide6.QtGui import QColor, QKeyEvent, QMouseEvent, QTextCharFormat, QTextCursor
 from PySide6.QtWidgets import (
-    QCheckBox, QFrame, QGridLayout, QHBoxLayout, QInputDialog, QLabel, QMenu,
-    QMessageBox, QPlainTextEdit, QPushButton, QStackedWidget, QTextBrowser,
+    QCheckBox, QFrame, QGridLayout, QHBoxLayout, QLabel, QMenu,
+    QPlainTextEdit, QPushButton, QStackedWidget, QTextBrowser,
     QToolButton, QVBoxLayout, QWidget, QWidgetAction,
 )
 
@@ -29,6 +29,7 @@ from app.services.ai_design_tool_service import AIDesignToolService
 from app.services.codebase_context_service import CodebaseContextService
 from app.ui import palette
 from app.ui.icons import apply_icon, font_icon
+from app.vxpui.custom_dialog import ConfirmDialog, TextInputDialog
 from app.views.ai_chat_render import TranscriptHtmlRenderer
 from app.views.ai_provider_dialog import AIProviderDialog
 
@@ -68,38 +69,39 @@ class AccessModeOption(QWidget):
         self._value = value
         self.setObjectName("AIAccessOption")
         self.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.setMinimumHeight(62)
+        self.setMinimumHeight(64)
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
         self.setProperty("checked", False)
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(11, 7, 10, 7)
-        layout.setSpacing(9)
+        layout.setContentsMargins(12, 9, 12, 9)
+        layout.setSpacing(11)
 
         self.icon = QLabel()
         self.icon.setObjectName("AIAccessOptionIcon")
-        self.icon.setFixedSize(24, 24)
+        self.icon.setFixedSize(30, 30)
         self.icon.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         icon = QPushButton()
         icon.setObjectName("AIAccessOptionIconGlyph")
         icon.setFlat(True)
         icon.setEnabled(False)
-        icon.setFixedSize(24, 24)
+        icon.setFixedSize(30, 30)
         icon.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         apply_icon(icon, icon_name, 16)
         icon_layout = QHBoxLayout(self.icon)
         icon_layout.setContentsMargins(0, 0, 0, 0)
         icon_layout.addWidget(icon)
-        layout.addWidget(self.icon, 0, Qt.AlignmentFlag.AlignTop)
+        layout.addWidget(self.icon, 0, Qt.AlignmentFlag.AlignVCenter)
 
         text_col = QVBoxLayout()
         text_col.setContentsMargins(0, 0, 0, 0)
-        text_col.setSpacing(1)
+        text_col.setSpacing(2)
         title_label = QLabel(title)
         title_label.setObjectName("AIAccessOptionTitle")
         title_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         description_label = QLabel(description)
         description_label.setObjectName("AIAccessOptionDescription")
+        description_label.setWordWrap(True)
         description_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         text_col.addWidget(title_label)
         text_col.addWidget(description_label)
@@ -294,7 +296,7 @@ class AIChatView(QWidget):
         title_icon.setPixmap(font_icon("spark", 18, normal="palette.CHAT_ACCENT").pixmap(18, 18))
         row.addWidget(title_icon)
         row.addSpacing(6)
-        title = QLabel("AI Trợ lý")
+        title = QLabel("AI Agent")
         title.setObjectName("AIChatTitle")
         row.addWidget(title)
         row.addStretch(1)
@@ -514,7 +516,7 @@ class AIChatView(QWidget):
         welcome_col.setSpacing(3)
         welcome_name_row = QHBoxLayout()
         welcome_name_row.setSpacing(6)
-        welcome_name = QLabel("LuaS30 AI Assistant")
+        welcome_name = QLabel("LuaS30 AI Agent")
         welcome_name.setObjectName("AIWelcomeName")
         welcome_name_row.addWidget(welcome_name)
         self.model_badge = QLabel("")
@@ -698,6 +700,11 @@ class AIChatView(QWidget):
         self.access_mode_menu.setObjectName("AIAccessMenu")
         self.access_mode_menu.setWindowFlag(Qt.WindowType.FramelessWindowHint, True)
         self.access_mode_menu.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        menu_header = QLabel("CHẾ ĐỘ TRUY CẬP")
+        menu_header.setObjectName("AIAccessMenuHeader")
+        header_action = QWidgetAction(self.access_mode_menu)
+        header_action.setDefaultWidget(menu_header)
+        self.access_mode_menu.addAction(header_action)
         for mode_title, mode_value, mode_description, mode_icon in ACCESS_MODES:
             action = QWidgetAction(self.access_mode_menu)
             option = AccessModeOption(
@@ -1067,11 +1074,8 @@ class AIChatView(QWidget):
         if not self._session_id:
             return
         initial = suggested.strip() or self._session_title
-        title, ok = QInputDialog.getText(
-            self,
-            "Rename Chat Session",
-            "Session name:",
-            text=initial,
+        title, ok = TextInputDialog.get_text(
+            self, "Rename Chat Session", "Session name:", text=initial
         )
         if not ok or not title.strip():
             return
@@ -1086,14 +1090,14 @@ class AIChatView(QWidget):
     def _delete_current_session(self) -> None:
         if not self._session_id:
             return
-        answer = QMessageBox.question(
-            self,
+        answer = ConfirmDialog.ask(
             "Delete Chat Session",
             f'Delete "{self._session_title}"?\n\nThis removes the locally saved chat history only.',
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No,
+            self,
+            confirm_text="Yes",
+            danger=True,
         )
-        if answer != QMessageBox.StandardButton.Yes:
+        if not answer:
             return
         sid = self._session_id
         self.session_store.delete(sid)
@@ -1207,7 +1211,7 @@ class AIChatView(QWidget):
         menu_width = max(320, min(390, self.width() - 14))
         self.access_mode_menu.setFixedWidth(menu_width)
         for row in self._access_rows.values():
-            row.setFixedWidth(max(292, menu_width - 12))
+            row.setFixedWidth(max(292, menu_width - 14))
 
         global_button = self.access_mode_button.mapToGlobal(QPoint(0, 0))
         menu_height = self.access_mode_menu.sizeHint().height()
@@ -2426,14 +2430,14 @@ class AIChatView(QWidget):
             return
 
         if risk in {"dangerous", "sensitive"}:
-            answer = QMessageBox.warning(
-                self,
+            answer = ConfirmDialog.ask(
                 "Confirm shell command",
                 f"{reason}\n\n{action.command}\n\nRun this command in the integrated terminal?",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.No,
+                self,
+                confirm_text="Run",
+                danger=True,
             )
-            if answer != QMessageBox.StandardButton.Yes:
+            if not answer:
                 return
 
         cwd = self._resolve_action_cwd(action)

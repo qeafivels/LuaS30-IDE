@@ -1,8 +1,9 @@
 """
 palette.py — Bảng màu DUY NHẤT của LuaS30 Studio.
 
-Chuẩn thiết kế: VS Code Dark Modern / Dark+ (neutral gray chrome + accent xanh
-dương `#0078d4`), không còn slate navy + cam MRE.
+Chuẩn thiết kế: ĐỒNG BỘ theo UAGet Desktop
+(`D:\\UAGet\\uaget\\src\\uaget\\desktop\\styles\\dark.qss`) — nền indigo-navy
+`#111122`/`#19192e`, viền `#24243d`–`#303049`, accent cam `#ff8a00`.
 
 Quy ước:
 - Mọi màu chrome (nền, viền, chữ, nút, selection) phải lấy từ đây. Không viết
@@ -14,107 +15,107 @@ Quy ước:
   (menu, popup) → HOVER → PRESSED.
 """
 
-# ---------------------------------------------------------------- nền (VS Code Dark Modern)
-BG_INK = "#181818"        # activity bar, side bar, title, menu bar — sâu nhất
-BG_ALT = "#1f1f1f"        # editor mặc định, tab chưa chọn, hàng xen kẽ
-BG_SURFACE = "#1e1e1e"    # mặt nội dung chính: panel, card, dialog, editor
-BG_RAISED = "#252526"     # menu, popup, command center, card nổi
-BG_HOVER = "#2a2d2e"      # hover hàng / nút
-BG_PRESSED = "#37373d"    # nút phụ, trạng thái nhấn
-BG_SELECT = "#04395e"     # mục đang chọn trong list / menu (VS Code selection)
-BG_SELECT_SOFT = "#264f78"  # vùng chọn chữ trong editor
+# ---------------------------------------------------------------- nền (UAGet Desktop)
+BG_INK = "#111122"        # activity bar, side bar, title, menu bar — sâu nhất
+BG_ALT = "#1c1c33"        # editor mặc định, tab chưa chọn, hàng xen kẽ
+BG_SURFACE = "#19192e"    # mặt nội dung chính: panel, card, dialog
+BG_RAISED = "#202038"     # menu, popup, command center, card nổi
+BG_HOVER = "#23233c"      # hover hàng / nút
+BG_PRESSED = "#2c2c4e"    # nút phụ, trạng thái nhấn
+BG_SELECT = "#1c2a3b"     # mục đang chọn trong list / menu (UAGet TopTab active)
+BG_SELECT_SOFT = "#41415b"  # vùng chọn chữ trong editor
 
 # ---------------------------------------------------------------- viền
-BORDER = "#2b2b2b"        # viền mảnh, đường phân cách
-BORDER_STRONG = "#3c3c3c"  # viền ô nhập / nút / khung
-BORDER_HOVER = "#454545"  # viền khi hover
-SCROLL = "#424242"        # tay cuộn
-SCROLL_HOVER = "#7a7a7a"
+BORDER = "#303049"        # viền mảnh, đường phân cách
+BORDER_STRONG = "#3a3a56"  # viền ô nhập / nút / khung
+BORDER_HOVER = "#575774"  # viền khi hover
+SCROLL = "#41415b"        # tay cuộn
+SCROLL_HOVER = "#5b5f77"
 
 # ---------------------------------------------------------------- chữ
-TEXT = "#ffffff"          # tiêu đề, chữ nhấn
-TEXT_2 = "#cccccc"        # chữ thường
-TEXT_3 = "#9d9d9d"        # nhãn
-TEXT_4 = "#858585"        # chữ mờ
-TEXT_5 = "#8a8a8a"        # chữ rất mờ, ghi chú nhỏ
+TEXT = "#f1f2f7"          # tiêu đề, chữ nhấn
+TEXT_2 = "#d8dbe7"        # chữ thường
+TEXT_3 = "#9ca2bb"        # nhãn
+TEXT_4 = "#8b91aa"        # chữ mờ
+TEXT_5 = "#9297ad"        # chữ rất mờ, ghi chú nhỏ
 
-# ---------------------------------------------------------------- accent (VS Code blue)
-ACCENT = "#0078d4"
-ACCENT_HOVER = "#0063b8"
-ACCENT_LIGHT = "#4da6ff"
-ACCENT_DEEP = "#005a9e"
-ON_ACCENT = "#ffffff"     # chữ trên nền accent
+# ---------------------------------------------------------------- accent (UAGet cam)
+ACCENT = "#ff8a00"
+ACCENT_HOVER = "#ff9a22"
+ACCENT_LIGHT = "#ffb14d"
+ACCENT_DEEP = "#e87a00"
+ON_ACCENT = "#1a1a2c"     # chữ trên nền accent
 
-# ---------------------------------------------------------------- status bar (VS Code Dark+)
-STATUS_BG = "#007acc"
-STATUS_FG = "#ffffff"
-STATUS_HOVER = "#0063a1"
+# ---------------------------------------------------------------- status bar
+STATUS_BG = "#151527"
+STATUS_FG = "#9ca2bb"
+STATUS_HOVER = "#24243d"
 
 # ---------------------------------------------------------------- trạng thái
-GREEN = "#0f7b4c"
-GREEN_LIGHT = "#6ee7b7"
-GREEN_BORDER = "#166534"
-RED = "#f87171"
-RED_LIGHT = "#fca5a5"
-RED_DEEP = "#b91c1c"
-RED_BORDER = "#7f1d1d"
-AMBER = "#fbbf24"
-AMBER_DEEP = "#78350f"
-AMBER_BORDER = "#78350f"
-INFO = "#7dd3fc"
-INFO_BG = "#0b2032"
-INFO_BORDER = "#164e63"
+GREEN = "#56c990"
+GREEN_LIGHT = "#7bd8ad"
+GREEN_BORDER = "#2f6b4f"
+RED = "#ff6375"
+RED_LIGHT = "#ff8f9a"
+RED_DEEP = "#c94b5b"
+RED_BORDER = "#6e2f36"
+AMBER = "#ff9b32"
+AMBER_DEEP = "#5c3a1a"
+AMBER_BORDER = "#5c3a1a"
+INFO = "#64a7ff"
+INFO_BG = "#141b2e"
+INFO_BORDER = "#2c4a66"
 
 # ---------------------------------------------------------------- diff (AI review)
-DIFF_ADDED_BG = "#173321"      # nền dòng được thêm
-DIFF_REMOVED_BG = "#3b1f24"    # nền dòng bị xoá
+DIFF_ADDED_BG = "#1b2b28"      # nền dòng được thêm
+DIFF_REMOVED_BG = "#331f27"    # nền dòng bị xoá
 
-# ---------------------------------------------------------------- Chat AI (Modern Dark IDE)
-# Bảng MÀU RIÊNG cho khu vực "AI Trợ lý" — dark xanh-tối + accent cam #FF6A00
-# theo PROMPT tái thiết kế "AI Coding Assistant". Chrome toàn cục của Studio VẪN
-# dùng palette VS Code ở trên; chỉ selector `AIChat*`/`AIWelcome*`/... lấy @CHAT_.
-CHAT_BG = "#0d1014"               # nền chính sâu nhất của khung chat
-CHAT_BG_STRONGER = "#11151a"      # header / composer strip / thanh tab
-CHAT_SURFACE = "#151a21"          # card, tin nhắn, pill model
-CHAT_PANEL = "#131820"            # panel phụ / input nền
-CHAT_RAISED = "#191f27"           # nút, chip, badge (mức card-hover)
-CHAT_RAISED_HOVER = "#1a2028"     # hover icon trần / nút
-CHAT_HOVER = "#171c23"            # hover hàng / tab chưa chọn
-CHAT_BORDER = "#272e38"           # viền chính
-CHAT_BORDER_WEAK = "#1e242c"      # viền mảnh, phân cách
-CHAT_TEXT = "#f2f4f7"             # chữ nhấn / tiêu đề
-CHAT_TEXT_2 = "#b7c1cd"           # chữ nội dung chính
-CHAT_TEXT_3 = "#9da7b5"           # chữ phụ / nhãn mờ
-CHAT_TEXT_4 = "#646d79"           # chữ disabled / ghi chú
-CHAT_ACCENT = "#ff6a00"           # cam nhấn chính
-CHAT_ACCENT_HOVER = "#ff7a1a"
-CHAT_ACCENT_PRESSED = "#e95f00"
-CHAT_ACCENT_DEEP = "#4a2814"      # nền/avatar accent nhạt
-CHAT_ON_ACCENT = "#111111"        # chữ trên nền cam
-CHAT_INPUT = "#131820"            # nền ô soạn prompt
-CHAT_INPUT_BORDER = "#303946"     # viền ô soạn prompt
-CHAT_TAB_ACTIVE = "#1c1815"       # nền tab đang chọn (cam ám rất tối)
-CHAT_ACCESS_BG = "#191714"        # nền pill Full Access đang bật
-CHAT_STOP = "#e95555"             # nút Dừng khi agent chạy
-CHAT_SEND_DISABLED = "#242a31"    # nền nút Gửi khi rỗng
-CHAT_ON_SEND_DISABLED = "#68727e" # chữ nút Gửi khi rỗng
-CHAT_TS = "#77818e"               # timestamp góc phải thẻ tin
-CHAT_AVATAR_USER = "#252d38"      # avatar "B"
-CHAT_SCROLL_THUMB = "#343c47"     # thanh cuộn mảnh
-CHAT_SCROLL_THUMB_HOVER = "#48515e"
+# ---------------------------------------------------------------- Chat AI (UAGet Desktop)
+# Bảng màu khu vực "AI Agent" — đồng bộ 1:1 với UAGet Desktop (dark.qss +
+# chat_area.py). Chrome toàn cục lấy @BG_*/@TEXT_... ở trên; selector
+# `AIChat*`/`AIWelcome*`/... lấy @CHAT_.
+CHAT_BG = "#19192e"               # nền chính của khung chat (ChatArea)
+CHAT_BG_STRONGER = "#18182d"      # header / composer strip / thanh tab (TopBar)
+CHAT_SURFACE = "#202039"          # card, tin nhắn, pill model (MessageBubble)
+CHAT_PANEL = "#1c1c33"            # panel phụ / input nền (CodeEditorWindow)
+CHAT_RAISED = "#272740"           # nút, chip, badge (ModelOptionCard)
+CHAT_RAISED_HOVER = "#2c2c4e"     # hover icon trần / nút (ClarifyOption:hover)
+CHAT_HOVER = "#1a1a31"            # hover hàng / tab chưa chọn (SessionList:hover)
+CHAT_BORDER = "#303049"           # viền chính (ChangeList/EditorTabBar)
+CHAT_BORDER_WEAK = "#24243d"      # viền mảnh, phân cách (TitleBar/ActivityBar)
+CHAT_TEXT = "#f1f2f7"             # chữ nhấn / tiêu đề (SessionName)
+CHAT_TEXT_2 = "#d9dce7"           # chữ nội dung chính (MessagePlainText)
+CHAT_TEXT_3 = "#9ca2bb"           # chữ phụ / nhãn mờ (TitleLabel)
+CHAT_TEXT_4 = "#5d637c"           # chữ disabled / ghi chú (SessionMeta)
+CHAT_ACCENT = "#ff8a00"           # cam nhấn chính
+CHAT_ACCENT_HOVER = "#ff9a22"
+CHAT_ACCENT_PRESSED = "#e87a00"
+CHAT_ACCENT_DEEP = "#3b2a20"      # nền/avatar accent nhạt (tím cam rất tối)
+CHAT_ON_ACCENT = "#1a1a2c"        # chữ trên nền cam (DialogBtnPrimary)
+CHAT_INPUT = "#15152a"            # nền ô soạn prompt (DialogInput)
+CHAT_INPUT_BORDER = "#34345a"     # viền ô soạn prompt (ClarifyOtherInput)
+CHAT_TAB_ACTIVE = "#1c2a3b"       # nền tab đang chọn (TopTab[active])
+CHAT_ACCESS_BG = "#3b2d32"        # nền pill Full Access (rgba cam 12% trên card)
+CHAT_STOP = "#e85d75"             # nút Dừng khi agent chạy (BtnSend spinning)
+CHAT_SEND_DISABLED = "#4b566a"    # nền nút Gửi khi rỗng (BtnSend:disabled)
+CHAT_ON_SEND_DISABLED = "#8b91aa" # chữ nút Gửi khi rỗng
+CHAT_TS = "#b99069"               # timestamp góc phải thẻ tin (MessageTime)
+CHAT_AVATAR_USER = "#272743"      # avatar "B" (nền InputBar)
+CHAT_SCROLL_THUMB = "#41415b"     # thanh cuộn mảnh
+CHAT_SCROLL_THUMB_HOVER = "#5b5f77"
 # Khối code trong transcript (render HTML nội bộ, không đụng editor palette):
-CHAT_CODE_BG = "#0c1117"
-CHAT_CODE_BORDER = "#242c36"
-CHAT_CODE_GUTTER = "#0a0e13"      # nền cột số dòng
-CHAT_CODE_GUTTER_TEXT = "#727d8c" # số dòng
-CHAT_CODE_LANG = "#8995a5"        # nhãn ngôn ngữ ở header
-# 6 màu cú pháp riêng cho code block chat (khác bảng VS Code của editor):
-CHAT_SYN_KEYWORD = "#c792ea"
-CHAT_SYN_STRING = "#e6b673"
-CHAT_SYN_NUMBER = "#82aaff"
-CHAT_SYN_FUNCTION = "#7fdbca"
-CHAT_SYN_COMMENT = "#66717f"
-CHAT_SYN_VARIABLE = "#aab8d4"
+CHAT_CODE_BG = "#10111a"
+CHAT_CODE_BORDER = "#34364b"
+CHAT_CODE_GUTTER = "#0d0e16"      # nền cột số dòng
+CHAT_CODE_GUTTER_TEXT = "#777d86" # số dòng
+CHAT_CODE_LANG = "#858ca4"        # nhãn ngôn ngữ ở header
+# 6 màu cú pháp riêng cho code block chat (bảng highlight chat_area.py của UAGet):
+CHAT_SYN_KEYWORD = "#ef8fcb"
+CHAT_SYN_STRING = "#6bdc91"
+CHAT_SYN_NUMBER = "#d7a6ff"
+CHAT_SYN_FUNCTION = "#ffad4a"
+CHAT_SYN_COMMENT = "#777d86"
+CHAT_SYN_VARIABLE = "#d3d7e3"
 
 # ---------------------------------------------------------------- màu cú pháp
 # Ngoại lệ có chủ ý — bảng VS Code dark+, KHÔNG đồng bộ theo chrome.
@@ -128,9 +129,9 @@ SYN_COMMENT = "#6a9955"
 SYN_CONST = "#569cd6"
 
 # ---------------------------------------------------------------- UI Designer
-DESIGNER_BG_DOT = "#2a2a2a"    # lưới chấm sau khung điện thoại
+DESIGNER_BG_DOT = "#2f2f4d"   # lưới chấm sau khung điện thoại
 DESIGNER_FRAME = ACCENT        # khung màn hình + viền thân máy
-DESIGNER_BEZEL = "#0a0a0a"     # vỏ máy
+DESIGNER_BEZEL = "#0d0d1a"     # vỏ máy
 GUIDE_ITEM = GREEN             # đường dóng: thẳng hàng thành phần
 GUIDE_FRAME = AMBER            # đường dóng: thẳng với khung màn hình
 

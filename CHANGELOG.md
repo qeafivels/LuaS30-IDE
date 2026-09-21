@@ -335,6 +335,59 @@ theo tên tệp tài liệu gốc.
   transcript khai báo **"Inter" → "Segoe UI"** theo đúng thứ tự ưu tiên typography
   spec. Kiểm lại bằng `studio_theme_check.py` PASS + 19 `validate_ai_*` PASS +
   render offscreen 360/420/480/600: footer không tràn, send/model không overlap.
+- **Tệp AI sửa/tạo tự mở thành tab editor kiểu VS Code**: `main_window.py` thêm
+  `_open_ai_touched_tabs(change_set)` — sau `_apply_ai_changes` (cả luồng review
+  bấm "Áp" lẫn auto-apply của Edit automatically/Full access qua
+  `QTimer.singleShot(0, ...)`) và `_accept_ai_change_file` (accept từng file),
+  mọi tệp trong change set được `tabs.open_file` mở tab (tệp đã mở thì nạp lại,
+  không sinh tab trùng), nội dung đúng bản after, không dirty, tab cuối mở được
+  chọn và focus. Tệp không tồn tại/bị loại bị bỏ qua êm. Smoke offscreen thật
+  (dựng VxpMainWindow + dự án tạm + AIChangeService.apply): 7/7 PASS; 19
+  `validate_ai_*` PASS.
+- **Đồng bộ bảng màu AI Trợ lý theo UAGet Desktop**: toàn bộ token `CHAT_*`
+  trong `palette.py` đổi sang đúng scheme indigo-navy + cam của
+  `D:\UAGet\uaget\src\uaget\desktop\styles\dark.qss` — nền chat `#19192e`,
+  header `#18182d`, card `#202039`, viền `#303049`/`#24243d`, accent
+  `#ff8a00` (hover `#ff9a22`, nhấn `#e87a00`), tab đang chọn `#1c2a3b`, nút
+  Dừng `#e85d75`, timestamp `#b99069`, send disabled `#4b566a`, code block
+  `#10111a` + 6 màu cú pháp theo highlighter `chat_area.py` (`#ef8fcb`,
+  `#6bdc91`, `#d7a6ff`, `#ffad4a`, `#777d86`, `#d3d7e3`). Chỉ đổi giá trị
+  token — `theme.py`/view không sửa, chrome toàn cục và 3 lớp kích thước
+  (42/18/44px) giữ nguyên. Verify: `studio_theme_check` FULL PASS (0 khối
+  sáng), 19 `validate_ai_*` PASS, render offscreen 360/480px khớp ảnh tham
+  chiếu.
+- **Đồng bộ màu UAGet cho TOÀN BỘ IDE + đổi tên "AI Trợ lý" → "AI Agent"**:
+  palette toàn cục trong `palette.py` chuyển từ VS Code Dark Modern sang đúng
+  scheme UAGet (nền `#111122`/`#19192e`/`#1c1c33`, viền `#24243d`–`#303049`,
+  accent cam `#ff8a00` với chữ tối `#1a1a2c`, selection `#1c2a3b`, status bar
+  `#151527`); 41 màu chrome cấu trúc trong `app/vxpui/*.py` +
+  `resources/dark_theme.qss` được map hàng loạt sang UAGet (giữ nguyên màu cú
+  pháp Material Ocean của editor và swatch thẻ dự án `home_page.py`). Chuỗi
+  hiển thị "AI Trợ lý"/"LuaS30 AI Assistant" đổi thành "AI Agent"
+  (`ai_chat_view.py`, `ai_chat_render.py`, `STUDIO_GUIDE.md`). Verify:
+  `studio_theme_check` FULL PASS (WCAG 14/14 với bảng màu mới, 0 khối sáng,
+  ảnh render toàn IDE + Project Hub), **57/57 validators** PASS, quét CJK sạch.
+- **Thanh cuộn thủ công hiện rõ trong AI Agent**: scrollbar của transcript
+  (`QTextEdit#AIChatTranscript`) từ 6px track trong suốt → 10px có nền
+  `@CHAT_PANEL` + viền `@CHAT_BORDER_WEAK` (cả trục đứng lẫn ngang), thumb
+  `min-height/width` 36→48px dễ bấm-kéo; policy vẫn AsNeeded nên chỉ chiếm
+  chỗ khi nội dung tràn. Render offscreen 14 tin dài: scrollbar hiện, kéo được
+  (max=1805); pill "↓ Tin nhắn mới" + smart-scroll không đổi hành vi. 19
+  `validate_ai_*` + theme check FULL PASS.
+- **Bố cục chuyên nghiệp cho menu chọn chế độ truy cập (AI Agent)**:
+  `AccessModeOption` nâng hàng 62→64px, icon đặt trong chip bo góc 30×30 căn
+  giữa dọc (thay vì lề trên), tiêu đề 13px/600, mô tả 11px tự xuống dòng
+  (hết chữ nhỏ mờ 10px), dấu ✓ căn giữa phải; thêm header in hoa "CHẾ ĐỘ
+  TRUY CẬP" đầu popup, hàng đang chọn có nền + viền accent nhạt, pill chế độ
+  cao 40→42px đồng bộ tab. Render offscreen đã soi ảnh; theme check + 19
+  `validate_ai_*` PASS.
+- Menu sidebar trang chủ (Trang chủ / Dự án / Tài liệu) căn TRÁI và có tính
+  năng thật: QSS mới cho `#SidebarButton`/`#SidebarUtility`/`#SidebarSection`
+  (nền trong, padding 10×12, hover đậm, hàng đang chọn nền `#1C2A3B` + vạch
+  accent cam trái 3px). "Trang chủ" giờ hiển thị 4 dự án gần nhất với tiêu đề
+  "Dự án gần đây" + nút "Xem tất cả →"; "Dự án" mở toàn bộ lưới "Tất cả dự
+  án"; "Tài liệu" mở `doc/INDEX.md`. Verify: studio_theme check PASS,
+  57/57 validators PASS, render offscreen 2 chế độ đã soi.
 
 
 ## 1.15.0 — AI Workbench v1

@@ -34,7 +34,7 @@ class VxpEmuPanel(QWidget):
 
         bar = QHBoxLayout()
         title = QLabel("VXPEmu · ARM diagnostics")
-        title.setStyleSheet("font-weight:700;color:#dce7f7")
+        title.setStyleSheet("font-weight:700;color:#dfe2ea")
         bar.addWidget(title)
         self.run_button = QToolButton()
         self.run_button.setText("Chạy cửa sổ VXPEmu")
@@ -50,14 +50,14 @@ class VxpEmuPanel(QWidget):
         self.stop_button.clicked.connect(self.stop_requested)
         bar.addWidget(self.stop_button)
         self.status = QLabel("Chưa chạy")
-        self.status.setStyleSheet("color:#8191aa")
+        self.status.setStyleSheet("color:#9ca2bb")
         bar.addWidget(self.status, 1, Qt.AlignmentFlag.AlignRight)
         root.addLayout(bar)
 
         metrics = QFrame()
         metrics.setObjectName("VxpEmuMetrics")
         metrics.setStyleSheet(
-            "#VxpEmuMetrics{background:#101722;border:1px solid #27344a;border-radius:6px}"
+            "#VxpEmuMetrics{background:#15152a;border:1px solid #303049;border-radius:6px}"
         )
         metric_layout = QHBoxLayout(metrics)
         metric_layout.setContentsMargins(10, 5, 10, 5)
@@ -91,9 +91,9 @@ class VxpEmuPanel(QWidget):
         layout.setContentsMargins(2, 0, 2, 0)
         layout.setSpacing(0)
         caption = QLabel(name)
-        caption.setStyleSheet("color:#72839d;font-size:9px")
+        caption.setStyleSheet("color:#858ca4;font-size:9px")
         number = QLabel(value)
-        number.setStyleSheet("color:#dce7f7;font-family:'Cascadia Mono','Consolas';font-weight:600")
+        number.setStyleSheet("color:#dfe2ea;font-family:'Cascadia Mono','Consolas';font-weight:600")
         layout.addWidget(caption)
         layout.addWidget(number)
         box.value_label = number

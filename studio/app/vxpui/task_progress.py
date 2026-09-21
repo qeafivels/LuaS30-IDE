@@ -93,7 +93,7 @@ class BottomTaskProgress(QFrame):
         self._base_title = title.strip() or "Run / Build"
         self.title_label.setText(self._base_title)
         self.title_label.setToolTip(self._base_title)
-        self.state_icon.setPixmap(icon("fa5s.circle-notch", "#70A6FF").pixmap(12, 12))
+        self.state_icon.setPixmap(icon("fa5s.circle-notch", "#64A7FF").pixmap(12, 12))
         self.progress.setRange(0, 0)
         self.cancel_button.setEnabled(True)
         self.open_button.setEnabled(True)
@@ -117,7 +117,7 @@ class BottomTaskProgress(QFrame):
         self.progress.setValue(1)
         self.cancel_button.setEnabled(False)
         if success:
-            self.state_icon.setPixmap(icon("fa5s.check-circle", "#62D690").pixmap(12, 12))
+            self.state_icon.setPixmap(icon("fa5s.check-circle", "#56C990").pixmap(12, 12))
             suffix = message or "Hoàn tất"
         else:
             self.state_icon.setPixmap(icon("fa5s.times-circle", "#FF727A").pixmap(12, 12))

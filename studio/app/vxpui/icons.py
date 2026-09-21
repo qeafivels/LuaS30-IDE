@@ -93,9 +93,9 @@ def _glyph_fallback(name: str, color: str, color_active: str) -> QIcon:
     return font_icon(
         _FA5_TO_GLYPH.get(key, "info"),
         size=16,
-        normal=color or "#9AA8BD",
+        normal=color or "#9CA2BB",
         active=color_active or "#FFFFFF",
-        disabled="#55606F",
+        disabled="#5D637C",
     )
 
 
@@ -120,7 +120,7 @@ def _cached_icon(name: str, color: str, color_active: str) -> QIcon:
     return _glyph_fallback(name, color, color_active)
 
 
-def icon(name: str, color: str = "#9AA8BD", color_active: str = "#FFFFFF") -> QIcon:
+def icon(name: str, color: str = "#9CA2BB", color_active: str = "#FFFFFF") -> QIcon:
     """Return a Font Awesome icon, falling back to a Segoe UI glyph."""
     return _cached_icon(name, color, color_active)
 
@@ -139,7 +139,7 @@ def _cached_app_icon(preferred: str | None) -> QIcon:
                 result = QIcon(str(path))
                 if not result.isNull():
                     return result
-    return icon("fa5s.gamepad", "#6D9FFF")
+    return icon("fa5s.gamepad", "#64A7FF")
 
 
 def app_icon(preferred: str | None = None) -> QIcon:

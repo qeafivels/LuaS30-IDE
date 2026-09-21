@@ -63,7 +63,7 @@ Facts that are easy to break:
   `Spaces: 4` badges (they are the first dropped when the window goes
   <1000px wide).
 - `AIChatView` renders its own assistant chrome (no PanelFrame header):
-  header "AI Trợ lý" + sessions/new/settings/close buttons, a segmented
+  header "AI Agent" + sessions/new/settings/close buttons, a segmented
   Chat / Context / Tools tab bar over a `QStackedWidget`, and on the Chat tab
   a welcome card (avatar, model badge, Vietnamese greeting) with a 2×3 grid
   of quick-action buttons that prefill the prompt — the card and the empty

@@ -2,8 +2,8 @@
 theme.py — QSS của toàn bộ LuaS30 Studio.
 
 Màu KHÔNG viết trực tiếp ở đây. Mỗi chỗ dùng một token `@TEN_TOKEN`, lấy từ
-`app/ui/palette.py` — bảng màu duy nhất của Studio (VS Code Dark Modern:
-nền neutral `#181818`/`#1e1e1e`, viền `#2b2b2b`/`#3c3c3c`, accent xanh `#0078d4`).
+`app/ui/palette.py` — bảng màu duy nhất của Studio (đồng bộ UAGet Desktop:
+nền indigo-navy `#111122`/`#19192e`, viền `#24243d`/`#303049`, accent cam `#ff8a00`).
 
 Đổi màu ở `palette.py` là đổi cả app. `_substitute()` ném lỗi ngay lúc import
 nếu gặp token không tồn tại — nếu để nguyên, Qt sẽ **âm thầm bỏ qua** cả rule
@@ -715,10 +715,11 @@ QTextBrowser#AIChatTranscript {
     font-size: 13px; font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
 QTextEdit#AIChatTranscript QScrollBar:vertical {
-    width: 6px; background: transparent; margin: 2px; border: 0;
+    width: 10px; background: @CHAT_PANEL; margin: 1px; border: 1px solid @CHAT_BORDER_WEAK;
+    border-radius: 6px;
 }
 QTextEdit#AIChatTranscript QScrollBar::handle:vertical {
-    background: @CHAT_SCROLL_THUMB; border-radius: 6px; min-height: 36px;
+    background: @CHAT_SCROLL_THUMB; border-radius: 6px; min-height: 48px;
 }
 QTextEdit#AIChatTranscript QScrollBar::handle:vertical:hover {
     background: @CHAT_SCROLL_THUMB_HOVER;
@@ -730,10 +731,11 @@ QTextEdit#AIChatTranscript QScrollBar::sub-page:vertical {
     background: none; border: 0; height: 0;
 }
 QTextEdit#AIChatTranscript QScrollBar:horizontal {
-    height: 6px; background: transparent; margin: 2px; border: 0;
+    height: 10px; background: @CHAT_PANEL; margin: 1px; border: 1px solid @CHAT_BORDER_WEAK;
+    border-radius: 6px;
 }
 QTextEdit#AIChatTranscript QScrollBar::handle:horizontal {
-    background: @CHAT_SCROLL_THUMB; border-radius: 6px; min-width: 36px;
+    background: @CHAT_SCROLL_THUMB; border-radius: 6px; min-width: 48px;
 }
 QTextEdit#AIChatTranscript QScrollBar::add-line:horizontal,
 QTextEdit#AIChatTranscript QScrollBar::sub-line:horizontal,
@@ -973,8 +975,8 @@ QPushButton#AIShellReject:hover { background: @CHAT_RAISED_HOVER; }
 APP_STYLE += _substitute(r"""
 /* AI Workbench v1 */
 QPushButton#AIAccessModeButton {
-    min-height: 40px;
-    max-height: 40px;
+    min-height: 42px;
+    max-height: 42px;
     min-width: 136px;
     background: @CHAT_SURFACE;
     color: @CHAT_TEXT_2;
@@ -998,27 +1000,37 @@ QMenu#AIAccessMenu {
     color: @CHAT_TEXT;
     border: 1px solid @CHAT_BORDER;
     border-radius: 12px;
-    padding: 5px;
+    padding: 6px;
 }
 QMenu#AIAccessMenu::item {
     background: transparent;
     padding: 0;
     margin: 0;
 }
+QLabel#AIAccessMenuHeader {
+    background: transparent;
+    color: @CHAT_TEXT_4;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 7px 12px 5px 12px;
+}
 QWidget#AIAccessOption {
     background: transparent;
-    border: 0;
+    border: 1px solid transparent;
     border-radius: 8px;
 }
 QWidget#AIAccessOption:hover {
     background: @CHAT_HOVER;
+    border-color: @CHAT_BORDER_WEAK;
 }
 QWidget#AIAccessOption[checked="true"] {
     background: @CHAT_HOVER;
+    border-color: @CHAT_ACCENT_DEEP;
 }
 QLabel#AIAccessOptionIcon {
-    background: transparent;
-    border: 0;
+    background: @CHAT_SURFACE;
+    border: 1px solid @CHAT_BORDER;
+    border-radius: 8px;
 }
 QPushButton#AIAccessOptionIconGlyph {
     background: transparent;
@@ -1028,18 +1040,18 @@ QPushButton#AIAccessOptionIconGlyph {
 QLabel#AIAccessOptionTitle {
     background: transparent;
     color: @CHAT_TEXT;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
 }
 QLabel#AIAccessOptionDescription {
     background: transparent;
-    color: @CHAT_TEXT_4;
-    font-size: 10px;
+    color: @CHAT_TEXT_3;
+    font-size: 11px;
 }
 QLabel#AIAccessOptionCheck {
     background: transparent;
     color: @CHAT_ACCENT;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
 }
 QPushButton#AIProviderCompact {

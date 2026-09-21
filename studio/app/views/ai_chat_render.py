@@ -47,7 +47,7 @@ class TranscriptHtmlRenderer:
         )
 
     def head_html(self, role: str, when: str = "") -> str:
-        name = "Bạn" if role == "user" else "AI Trợ lý"
+        name = "Bạn" if role == "user" else "AI Agent"
         time_cell = (
             f'<td align="right" style="vertical-align:bottom;color:{palette.CHAT_TS};'
             f'font-size:11px;">{html.escape(when)}</td>'

@@ -420,13 +420,13 @@ class VxpMainWindow(QWidget):
         """Keep title/menu text readable even when Windows uses a light palette."""
         palette = menu_bar.palette()
         for role, color in (
-            (QPalette.ColorRole.Window, "#0F1115"),
-            (QPalette.ColorRole.Base, "#151A23"),
-            (QPalette.ColorRole.Button, "#151A23"),
-            (QPalette.ColorRole.WindowText, "#E6E8EC"),
-            (QPalette.ColorRole.Text, "#E6E8EC"),
-            (QPalette.ColorRole.ButtonText, "#E6E8EC"),
-            (QPalette.ColorRole.Highlight, "#27446A"),
+            (QPalette.ColorRole.Window, "#111122"),
+            (QPalette.ColorRole.Base, "#19192E"),
+            (QPalette.ColorRole.Button, "#19192E"),
+            (QPalette.ColorRole.WindowText, "#D8DBE7"),
+            (QPalette.ColorRole.Text, "#D8DBE7"),
+            (QPalette.ColorRole.ButtonText, "#D8DBE7"),
+            (QPalette.ColorRole.Highlight, "#1C2A3B"),
             (QPalette.ColorRole.HighlightedText, "#FFFFFF"),
         ):
             palette.setColor(role, QColor(color))
@@ -833,7 +833,7 @@ class VxpMainWindow(QWidget):
 
     def _build_ai_dock(self) -> None:
         """CHAT AI — cột thứ ba của workspace, kiểu panel Chat của VS Code."""
-        # AIChatView tự mang header "AI Trợ lý" + tab riêng nên bỏ header PanelFrame.
+        # AIChatView tự mang header "AI Agent" + tab riêng nên bỏ header PanelFrame.
         ai_panel = PanelFrame("CHAT AI", show_header=False)
         ai_panel.set_content_margins(0, 0, 0, 0)
         self.ai_panel_frame = ai_panel
@@ -2248,23 +2248,12 @@ class VxpMainWindow(QWidget):
         self._show_ai_diff(self._ai_change_set, activate=True)
 
     def _reload_applied_editors(self, change_set: PreparedChangeSet) -> None:
-        """Reload and expose every AI-touched text file as an editor tab.
-
-        VS Code-style behavior: files that were already open are refreshed in-place;
-        files created or changed by the agent are opened as background tabs; then the
-        first successfully opened changed file becomes the active editor. This keeps
-        all AI work visible without creating duplicate tabs across editor groups.
-        """
         touched_design = False
-        opened_targets: list[Path] = []
-
         for change in change_set.changes:
             target = change.absolute_path.resolve()
             rel = str(change.relative_path or "").replace("\\", "/").lower()
             if rel.endswith("ui_design.json") or rel.startswith("assets/"):
                 touched_design = True
-
-            found_editor = None
             for group in self.tabs.groups:
                 found = group.find_editor(target)
                 if not found:
@@ -2272,28 +2261,9 @@ class VxpMainWindow(QWidget):
                 _index, editor = found
                 editor.setPlainText(change.after)
                 editor.document().setModified(False)
-                found_editor = editor
-                break
-
-            # Newly-created files and previously-closed files should immediately
-            # appear in the editor strip, just like files changed by VS Code agents.
-            editor = found_editor or self.tabs.open_file(target, activate=False)
-            if editor is not None:
-                self.tabs.set_ai_file_status(
-                    target,
-                    "modified" if change.existed else "created",
-                )
-                opened_targets.append(target)
-
         if self.session.root:
             self.index.set_root(self.session.root)
             self.explorer.tree.refresh()
-
-        # Put the first AI-touched source file in front after all tabs are created.
-        # open_file() reuses an existing tab, so this never duplicates a document.
-        if opened_targets:
-            self.tabs.open_file(opened_targets[0], activate=True)
-
         if touched_design:
             # AI vừa ghi thiết kế/asset — designer là widget sống nên canvas +
             # registry cũ sẽ giữ nguyên placeholder. Quét lại assets/ rồi nạp lại
@@ -2301,6 +2271,35 @@ class VxpMainWindow(QWidget):
             designer = self.assets_studio.designer
             designer.sync_project_assets()
             designer.reload_current_screen()
+
+    def _open_ai_touched_tabs(self, change_set: PreparedChangeSet) -> None:
+        """Open every AI-touched source file as a VS Code-like editor tab.
+
+        Existing tabs are reused; new/closed files open in the background, each
+        receives an AI Modified / AI Created badge, and the first changed file is
+        activated after the batch is prepared.
+        """
+        self._enter_editor()
+        opened_targets: list[Path] = []
+        for change in change_set.changes:
+            target = change.absolute_path.resolve()
+            if not target.is_file():
+                continue
+            editor = self.tabs.open_file(target, activate=False)
+            if editor is None:
+                continue
+            editor.setPlainText(change.after)
+            editor.document().setModified(False)
+            self.tabs.set_ai_file_status(
+                target,
+                "modified" if change.existed else "created",
+            )
+            opened_targets.append(target)
+
+        if opened_targets:
+            editor = self.tabs.open_file(opened_targets[0], activate=True)
+            if editor is not None:
+                editor.setFocus()
 
     def _apply_ai_changes(self) -> None:
         change_set = self._ai_change_set
@@ -2314,6 +2313,7 @@ class VxpMainWindow(QWidget):
             self.show_status(f"AI code apply failed: {exc}")
             return
         self._reload_applied_editors(change_set)
+        self._open_ai_touched_tabs(change_set)
         paths = [path.relative_to(change_set.project_root).as_posix() for path in applied]
         files = [
             {"path": c.relative_path, "added": c.added_lines, "removed": c.removed_lines}
@@ -2376,6 +2376,7 @@ class VxpMainWindow(QWidget):
                 before=text, after=text)],
         )
         self._reload_applied_editors(single)
+        self._open_ai_touched_tabs(single)
         view.set_change_set(change_set if change_set.changes else None)
         if not change_set.changes:
             view.mark_applied(backup)
@@ -2644,12 +2645,14 @@ class VxpMainWindow(QWidget):
             event.accept()
             return
         if self.build_service.active:
-            answer = QMessageBox.question(
-                self, "Build in progress",
+            answer = ConfirmDialog.ask(
+                "Build in progress",
                 "A build is still running. Cancel it and exit?",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                self,
+                confirm_text="Yes",
+                danger=True,
             )
-            if answer != QMessageBox.StandardButton.Yes:
+            if not answer:
                 event.ignore()
                 return
             self.build_service.cancel()

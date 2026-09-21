@@ -7,8 +7,12 @@ from pathlib import Path
 from PySide6.QtCore import QDir, QPoint, QSortFilterProxyModel, Signal, Qt, QUrl
 from PySide6.QtGui import QAction, QDesktopServices
 from PySide6.QtWidgets import (
-    QFileSystemModel, QInputDialog, QMenu, QMessageBox, QTreeView, QWidget,
+    QFileSystemModel, QMenu, QTreeView, QWidget,
     QApplication,
+)
+
+from app.vxpui.custom_dialog import (
+    ConfirmDialog, NoticeDialog, TextInputDialog,
 )
 
 

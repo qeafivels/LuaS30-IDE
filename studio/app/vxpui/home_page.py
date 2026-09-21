@@ -50,7 +50,7 @@ class ProjectPreview(QWidget):
         palettes = [
             ("#41A6E8", "#18385E", "#4E8C3A", "#814721"),
             ("#26314C", "#101522", "#2D5D47", "#1A352C"),
-            ("#7254A5", "#17213C", "#784D84", "#3E274E"),
+            ("#7254A5", "#202039", "#784D84", "#3E274E"),
             ("#2B8D7F", "#17354A", "#386D48", "#6F4728"),
             ("#A14D78", "#24152E", "#5E354D", "#311A32"),
             ("#303A67", "#101628", "#34476F", "#1A243E"),
@@ -99,7 +99,7 @@ class ProjectPreview(QWidget):
             painter.drawEllipse(int(width * x), int(height * 0.34), 8, 8)
 
         painter.setClipping(False)
-        painter.setPen(QPen(QColor("#2A3445"), 1))
+        painter.setPen(QPen(QColor("#303049"), 1))
         painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.drawRoundedRect(rect, 9, 9)
 
@@ -204,6 +204,7 @@ class HomePage(QWidget):
         super().__init__(parent)
         self.setObjectName("HomePage")
         self._projects: list[ProjectRecord] = []
+        self._mode = "home"  # "home" = 4 dự án gần đây, "projects" = toàn bộ
         self._grid_columns = 4
         self._compact_mode = False
         self._needs_grid_rebuild = True
@@ -270,8 +271,15 @@ class HomePage(QWidget):
         all_head = QHBoxLayout()
         all_title = QLabel("Tất cả dự án")
         all_title.setObjectName("SectionTitle")
+        self.section_title = all_title
         all_head.addWidget(all_title)
         all_head.addStretch()
+        self.section_action = QPushButton("Xem tất cả →")
+        self.section_action.setObjectName("SectionAction")
+        self.section_action.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.section_action.clicked.connect(self._show_all_projects)
+        self.section_action.hide()
+        all_head.addWidget(self.section_action)
         self.count_label = QLabel("0 dự án")
         self.count_label.setObjectName("SectionCount")
         all_head.addWidget(self.count_label)
@@ -319,7 +327,7 @@ class HomePage(QWidget):
             return button
 
         nav("Trang chủ", "fa5s.home", "home", True)
-        nav("Dự án", "fa5s.folder", "projects")
+        self.projects_nav = nav("Dự án", "fa5s.folder", "projects")
 
         divider = QFrame()
         divider.setFrameShape(QFrame.Shape.HLine)
@@ -366,7 +374,7 @@ class HomePage(QWidget):
         layout.setContentsMargins(24, 34, 24, 34)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         image = QLabel()
-        image.setPixmap(icon("fa5s.folder-plus", "#5B93FF").pixmap(42, 42))
+        image.setPixmap(icon("fa5s.folder-plus", "#FF8A00").pixmap(42, 42))
         image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title = QLabel("Chưa có dự án nào")
         title.setObjectName("EmptyTitle")
@@ -392,6 +400,7 @@ class HomePage(QWidget):
         self.count_label.setText(f"{len(projects)} dự án")
         self.empty_state.setVisible(not projects)
         self.all_section.setVisible(bool(projects))
+        self._update_section_head()
         self._reflow_projects()
 
     def set_compact_mode(self, enabled: bool) -> None:
@@ -429,15 +438,35 @@ class HomePage(QWidget):
         if not self._reflow_timer.isActive():
             self._reflow_timer.start()
 
+    def _visible_projects(self) -> list[ProjectRecord]:
+        # scan() đã sắp xếp theo modified giảm dần nên 4 mục đầu là mới nhất.
+        return self._projects[:4] if self._mode == "home" else self._projects
+
+    def _update_section_head(self) -> None:
+        recent = self._mode == "home" and len(self._projects) > 4
+        self.section_title.setText(
+            "Dự án gần đây" if self._mode == "home" else "Tất cả dự án"
+        )
+        self.section_action.setVisible(recent)
+
+    def _show_all_projects(self) -> None:
+        self.projects_nav.setChecked(True)
+        self._set_filter("projects")
+
     def _reflow_projects(self) -> None:
         available = max(220, self.scroll.viewport().width() - (36 if self._compact_mode else 76))
         columns = max(1, min(4, available // 250))
-        if not self._needs_grid_rebuild and columns == self._grid_columns:
+        visible = self._visible_projects()
+        if (
+            not self._needs_grid_rebuild
+            and columns == self._grid_columns
+            and self.all_grid.count() == len(visible)
+        ):
             return
         self._grid_columns = columns
         self._needs_grid_rebuild = False
         self._clear_grid(self.all_grid)
-        for index, project in enumerate(self._projects):
+        for index, project in enumerate(visible):
             self.all_grid.addWidget(self._make_card(project), index // columns, index % columns)
         for column in range(columns):
             self.all_grid.setColumnStretch(column, 1)
@@ -458,6 +487,10 @@ class HomePage(QWidget):
                 widget.deleteLater()
 
     def _set_filter(self, mode: str) -> None:
+        self._mode = mode
         self.all_section.setVisible(mode in {"home", "projects"} and bool(self._projects))
         self.empty_state.setVisible(not self._projects)
+        self._needs_grid_rebuild = True
+        self._update_section_head()
+        self._reflow_projects()
         self.scroll.verticalScrollBar().setValue(0)

@@ -6,10 +6,10 @@ import re
 from PySide6.QtGui import QColor, QFont, QTextCharFormat, QTextCursor
 from PySide6.QtWidgets import QPlainTextEdit
 
-ERROR_COLOR = QColor("#FF6B72")
-WARNING_COLOR = QColor("#F5B84B")
-SUCCESS_COLOR = QColor("#62D690")
-INFO_COLOR = QColor("#D7DFEB")
+ERROR_COLOR = QColor("#FF6375")
+WARNING_COLOR = QColor("#FF9B32")
+SUCCESS_COLOR = QColor("#56C990")
+INFO_COLOR = QColor("#DFE2EA")
 
 _ERROR_PATTERNS = (
     r"\[error\]",

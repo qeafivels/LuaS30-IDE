@@ -5,15 +5,19 @@ from pathlib import Path
 from PySide6.QtCore import QPoint, Qt, Signal
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
-    QFileDialog, QLabel, QMenu, QMessageBox, QTabBar, QTabWidget, QToolButton, QWidget,
+    QDialog, QFileDialog, QLabel, QMenu, QTabBar, QTabWidget, QToolButton, QWidget,
 )
 
 from app.ui import palette
 from app.ui.icons import apply_icon
+from app.vxpui.custom_dialog import CustomDialog, NoticeDialog
 from app.vxpui.icons import icon as chrome_icon
 
 from .code_editor import CodeEditor
 from .editor_pane import EditorPane
+
+# Mã result riêng cho nút "Không lưu" trong hộp thoại Unsaved changes.
+_DISCARD = -100
 
 
 TEXT_EXTENSIONS = {
@@ -330,7 +334,7 @@ class EditorTabs(QTabWidget):
                 self.setCurrentIndex(existing[0])
             return existing[1]
         if file_path.suffix.lower() not in TEXT_EXTENSIONS and file_path.name not in {"Makefile"}:
-            QMessageBox.information(self, "LuaS30 Studio", f"Binary preview is not supported yet:\n{file_path}")
+            NoticeDialog("LuaS30 Studio", f"Binary preview is not supported yet:\n{file_path}", self).exec()
             return None
         try:
             text = file_path.read_text(encoding="utf-8")
@@ -338,10 +342,10 @@ class EditorTabs(QTabWidget):
             try:
                 text = file_path.read_text(encoding="latin-1")
             except OSError as exc:
-                QMessageBox.critical(self, "Open file failed", str(exc))
+                NoticeDialog("Open file failed", str(exc), self, error=True).exec()
                 return None
         except OSError as exc:
-            QMessageBox.critical(self, "Open file failed", str(exc))
+            NoticeDialog("Open file failed", str(exc), self, error=True).exec()
             return None
 
         pane = EditorPane(file_path)
@@ -389,7 +393,7 @@ class EditorTabs(QTabWidget):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(editor.toPlainText(), encoding="utf-8", newline="\n")
         except OSError as exc:
-            QMessageBox.critical(self, "Save file failed", str(exc))
+            NoticeDialog("Save file failed", str(exc), self, error=True).exec()
             return False
         editor.document().setModified(False)
         self._update_tab_title(editor, False)
@@ -443,19 +447,22 @@ class EditorTabs(QTabWidget):
     def _confirm_discard_or_save(self, editor: CodeEditor) -> bool:
         if not editor.document().isModified():
             return True
-        box = QMessageBox(self)
-        box.setWindowTitle("Unsaved changes")
-        box.setIcon(QMessageBox.Icon.Warning)
-        box.setText(f"Save changes to {editor.display_name}?")
-        box.setStandardButtons(
-            QMessageBox.StandardButton.Save
-            | QMessageBox.StandardButton.Discard
-            | QMessageBox.StandardButton.Cancel
-        )
+        box = CustomDialog("Unsaved changes", parent=self, width=500, height=250)
+        from PySide6.QtWidgets import QLabel
+        prompt = QLabel(f"Save changes to {editor.display_name}?")
+        prompt.setWordWrap(True)
+        prompt.setObjectName("NoticeText")
+        box.add_body_widget(prompt)
+        cancel = box.add_footer_button("Hủy bỏ", ghost=True, icon_name="fa5s.times")
+        discard = box.add_footer_button("Không lưu", danger=True, icon_name="fa5s.trash-alt")
+        save = box.add_footer_button("Lưu", accent=True, icon_name="fa5s.save")
+        cancel.clicked.connect(box.reject)
+        discard.clicked.connect(lambda: box.done(_DISCARD))
+        save.clicked.connect(box.accept)
         result = box.exec()
-        if result == QMessageBox.StandardButton.Save:
+        if result == QDialog.DialogCode.Accepted:
             return self.save_editor(editor)
-        if result == QMessageBox.StandardButton.Discard:
+        if result == _DISCARD:
             return True
         return False
 
