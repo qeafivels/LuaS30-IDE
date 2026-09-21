@@ -61,10 +61,10 @@ local function drawGuide()
     Gfx.panel(30, 58, 180, 178)
     local lines = {
         "MOVE: 2 4 6 8",
-        "COLLECT ORANGE STARS",
-        "AVOID RED BLOCKS",
-        "GET 10 STARS TO WIN",
-        "0 / BACK: RETURN",
+        "COLLECT 15 ORANGE STARS",
+        "CHAIN STARS FOR x3 COMBO",
+        "GREEN + = LIFE / TIME BONUS",
+        "0 / BACK: PAUSE MENU",
     }
     for i = 1, #lines do
         E.text(42, 78 + (i - 1) * 28, lines[i], i == 1 and C.accent2 or C.ink)
@@ -87,9 +87,9 @@ local function drawAbout()
     Gfx.panel(28, 62, 184, 150)
     Gfx.text_center(82, "DOODLE QUEST", C.ink)
     Gfx.text_center(106, "UI + GAME TEMPLATE", C.accent2)
-    Gfx.text_center(132, "240x320 / MTK6260", C.ink2)
+    Gfx.text_center(132, "3 LEVELS / COMBO / LIVES", C.ink2)
     Gfx.text_center(158, "LOW-RAM PROCEDURAL ART", C.ink2)
-    Gfx.text_center(184, "Qeafivels / LuaS30", C.green)
+    Gfx.text_center(184, "240x320 / MTK6260", C.green)
     footer("5 / BACK TO MENU")
 end
 
