@@ -110,8 +110,9 @@ for path in (
     template / "src/game.lua",
 ):
     text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
     for marker in ("<<<<<<<", "=======", ">>>>>>>"):
-        if marker in text:
+        if any(line.startswith(marker) for line in lines):
             missing.append(f"conflict marker {marker}: {path.relative_to(ROOT)}")
 
 if missing:
