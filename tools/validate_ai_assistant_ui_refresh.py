@@ -39,7 +39,7 @@ for token in (
     "class TranscriptHtmlRenderer",
     "def render_markdown",
     "def render_code_block",
-    "AI Trợ lý",
+    "AI Agent",
 ):
     if token not in renderer:
         missing.append(f"renderer:{token}")
