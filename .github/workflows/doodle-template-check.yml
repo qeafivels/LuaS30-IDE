@@ -1,0 +1,27 @@
+name: Doodle Quest Template Checks
+
+on:
+  pull_request:
+    paths:
+      - "templates/DoodleQuest/**"
+      - "studio/app/core/project_session.py"
+      - "studio/app/ui/mediatek_mre_dialog.py"
+      - "studio/app/vxpui/main_window.py"
+      - "tools/validate_doodle_quest_template.py"
+      - ".github/workflows/doodle-template-check.yml"
+  workflow_dispatch:
+
+jobs:
+  validate-template:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate Doodle Quest template
+        run: python tools/validate_doodle_quest_template.py

@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "platform": "MediaTek MRE",
+  "appname": "DoodleQuest",
+  "appver": "1.0.0",
+  "vendor": "LuaS30",
+  "resolution": {
+    "id": "240x320",
+    "label": "240x320  (QVGA - Chuẩn Nokia)",
+    "width": 240,
+    "height": 320
+  },
+  "chipset": {
+    "id": "MTK6260",
+    "label": "MTK6260  (Nokia 220, 225)"
+  },
+  "heap_kb": 1024,
+  "heap_label": "1024 KB  (1MB - Tiêu chuẩn game MRE)",
+  "compat_profile": "nokia225-rm1011",
+  "mre_api": "Audio File ProMng"
+}

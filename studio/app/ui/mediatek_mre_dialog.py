@@ -17,6 +17,7 @@ from app.ui.icons import apply_icon, glyph, icon_font
 
 @dataclass(frozen=True)
 class MediaTekProjectConfig:
+    template_id: str
     app_name: str
     app_version: str
     vendor: str
@@ -34,6 +35,7 @@ class MediaTekProjectConfig:
     def project_metadata(self) -> dict:
         return {
             "name": self.app_name,
+            "template": self.template_id,
             "app_version": self.app_version,
             "vendor": self.vendor,
             "ram_kb": self.ram_kb,
@@ -72,6 +74,14 @@ class MediaTekProjectConfig:
             "compat_profile": self.compat_profile,
             "mre_api": self.mre_api,
         }
+
+
+PROJECT_TEMPLATE_OPTIONS = (
+    ("basic", "Blank Project", "Khung Lua tối giản để bắt đầu từ đầu"),
+    ("doodle-quest", "Doodle Quest", "Game mẫu có UI notebook, HUD, combo, 3 màn"),
+    ("ninja-runner", "Ninja Runner", "Game runner/parkour mẫu 240x320"),
+    ("catbox-mre", "CatBoxMRE", "Mẫu game nâng cao với nhiều hệ thống"),
+)
 
 
 RESOLUTIONS = (
@@ -202,6 +212,12 @@ class MediaTekMREConfigDialog(QDialog):
         grid.setHorizontalSpacing(14)
         grid.setVerticalSpacing(8)
 
+        self.template = QComboBox()
+        self.template.setObjectName("MRECombo")
+        for template_id, label, description in PROJECT_TEMPLATE_OPTIONS:
+            self.template.addItem(f"{label} — {description}", template_id)
+        self.template.setCurrentIndex(1)
+
         self.app_name = QLineEdit(app_name)
         self.app_name.setObjectName("MREField")
         self.app_name.setPlaceholderText("Ví dụ: MRE Snake Retro")
@@ -234,31 +250,35 @@ class MediaTekMREConfigDialog(QDialog):
         self.path_preview.setObjectName("MREPathPreview")
         self.path_preview.setWordWrap(True)
 
-        self._label(grid, "Tên ứng dụng (APPNAME)", 0, 0)
-        self._label(grid, "Phiên bản (APPVER)", 0, 1)
-        grid.addWidget(self.app_name, 1, 0)
-        grid.addWidget(self.app_version, 1, 1)
+        self._label(grid, "Mẫu dự án", 0, 0, 1, 2)
+        grid.addWidget(self.template, 1, 0, 1, 2)
 
-        self._label(grid, "Nhà phát triển (VENDOR)", 2, 0, 1, 2)
-        grid.addWidget(self.vendor, 3, 0, 1, 2)
+        self._label(grid, "Tên ứng dụng (APPNAME)", 2, 0)
+        self._label(grid, "Phiên bản (APPVER)", 2, 1)
+        grid.addWidget(self.app_name, 3, 0)
+        grid.addWidget(self.app_version, 3, 1)
 
-        self._label(grid, "Màn hình (Resolution)", 4, 0)
-        self._label(grid, "Chipset MediaTek", 4, 1)
-        grid.addWidget(self.resolution, 5, 0)
-        grid.addWidget(self.chipset, 5, 1)
+        self._label(grid, "Nhà phát triển (VENDOR)", 4, 0, 1, 2)
+        grid.addWidget(self.vendor, 5, 0, 1, 2)
 
-        self._label(grid, "Dung lượng Heap RAM cấp phát", 6, 0, 1, 2)
-        grid.addWidget(self.ram, 7, 0, 1, 2)
+        self._label(grid, "Màn hình (Resolution)", 6, 0)
+        self._label(grid, "Chipset MediaTek", 6, 1)
+        grid.addWidget(self.resolution, 7, 0)
+        grid.addWidget(self.chipset, 7, 1)
+
+        self._label(grid, "Dung lượng Heap RAM cấp phát", 8, 0, 1, 2)
+        grid.addWidget(self.ram, 9, 0, 1, 2)
 
         hint = QLabel(
-            "AppID được tạo tự động. MTK6260 mặc định dùng profile Nokia 225 / "
-            "S30+ native; đường dẫn MRE SDK dùng cấu hình chung trong Settings."
+            "AppID được tạo tự động. Chọn Doodle Quest để tạo sẵn game có "
+            "Splash/Menu/HUD/gameplay notebook. MTK6260 mặc định dùng profile "
+            "Nokia 225 / S30+ native."
         )
         hint.setObjectName("MREDialogHint")
         hint.setWordWrap(True)
-        grid.addWidget(hint, 8, 0, 1, 2)
+        grid.addWidget(hint, 10, 0, 1, 2)
 
-        grid.addWidget(self.path_preview, 9, 0, 1, 2)
+        grid.addWidget(self.path_preview, 11, 0, 1, 2)
         root.addWidget(body)
 
         footer = QFrame()
@@ -360,6 +380,7 @@ class MediaTekMREConfigDialog(QDialog):
         cid, compat, api = self.chipset.currentData()
         ram_kb = int(self.ram.currentData())
         return MediaTekProjectConfig(
+            template_id=str(self.template.currentData() or "basic"),
             app_name=ProjectSession.validate_project_name(self.app_name.text()),
             app_version=self.app_version.text().strip(),
             vendor=self.vendor.text().strip(),

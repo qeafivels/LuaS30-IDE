@@ -1,0 +1,16 @@
+{
+  "format": "LuaS30 UI Design",
+  "version": 2,
+  "canvas": {
+    "width": 240,
+    "height": 320
+  },
+  "current": "main",
+  "screens": [
+    {
+      "id": "main",
+      "name": "Main",
+      "items": []
+    }
+  ]
+}
