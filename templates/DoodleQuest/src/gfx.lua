@@ -111,11 +111,38 @@ function M.player(x, y, frame)
     M.rect(x + 8, y + 17, 5, 1, C.dark)
 end
 
-function M.hud(score, timeLeft)
-    M.panel(28, 8, 184, 28)
-    E.text(36, 18, "SCORE " .. tostring(score), C.ink)
-    local t = "TIME " .. tostring(math.max(0, math.ceil(timeLeft)))
-    E.text(204 - E.text_width(t), 18, t, C.accent2)
+function M.bonus(x, y)
+    M.rect(x + 3, y, 5, 11, C.green)
+    M.rect(x, y + 3, 11, 5, C.green)
+    M.rect(x + 4, y + 1, 3, 9, C.white)
+    M.rect(x + 1, y + 4, 9, 3, C.white)
+end
+
+function M.hud(score, timeLeft, lives, combo, level, stars, goal)
+    M.panel(27, 6, 186, 38)
+    E.text(34, 13, "S " .. tostring(score), C.ink)
+    E.text(88, 13, "L" .. tostring(level), C.ink2)
+
+    local t = "T " .. tostring(math.max(0, math.ceil(timeLeft)))
+    E.text(205 - E.text_width(t), 13, t, C.accent2)
+
+    E.text(34, 28, "HP " .. string.rep("*", math.max(0, lives)), C.green)
+    if combo and combo > 1 then
+        E.text(90, 28, "COMBO x" .. tostring(combo), C.accent)
+    else
+        E.text(90, 28, "COMBO x1", C.pencil)
+    end
+
+    local p = tostring(stars or 0) .. "/" .. tostring(goal or 0)
+    E.text(205 - E.text_width(p), 28, p, C.ink2)
+end
+
+function M.progress(x, y, w, value, maximum)
+    maximum = math.max(1, maximum or 1)
+    local fill = math.floor(w * math.max(0, math.min(maximum, value or 0)) / maximum)
+    M.rect(x, y, w, 5, C.shadow)
+    M.rect(x, y, fill, 5, C.accent)
+    E.frame(x, y, w, 5, C.ink2)
 end
 
 return M
